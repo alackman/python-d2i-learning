@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-import requests
-import urllib3
-from sc_pc import postcode_finder
+
 
 st.title('School Census File Joiner')
+
+
 
 def convert_df(df):
    return df.to_csv(index=False).encode('utf-8')
@@ -49,8 +49,6 @@ if term_file and (la_attendance_files or academy_attendance_files):
         term_df = pd.read_csv(term_file[0])
     term_df = term_df[['pupilonrolltableid','upn']]
 
-    st.dataframe(term_df)
-
     if la_attendance_files:
         if len(la_attendance_files) == 3:
             for file in la_attendance_files:
@@ -73,7 +71,6 @@ if term_file and (la_attendance_files or academy_attendance_files):
             la_attendance_pivot = la_attendance_pivot.groupby(['pupilonrolltableid'], as_index=False).sum()
             la_result = pd.merge(la_pupils, la_attendance_pivot, how='left', on='pupilonrolltableid')
             la_result['postcode'] = la_result['postcode'].str.replace(' ','')
-            st.dataframe(la_result)
             la_check = True
         else:
             st.write("Not all  LA attendance files are present. Restart process")
@@ -101,7 +98,6 @@ if term_file and (la_attendance_files or academy_attendance_files):
             ac_attendance_pivot = ac_attendance_pivot.groupby(['pupilonrolltableid'], as_index=False).sum()
             ac_result = pd.merge(ac_pupils, ac_attendance_pivot, how='left', on='pupilonrolltableid')
             ac_result['postcode'] = ac_result['postcode'].str.replace(' ','')
-            st.dataframe(ac_result)
             ac_check = True
         else:
             st.write("Not all Academy attendance files are present. Restart process")
@@ -118,15 +114,11 @@ if term_file and (la_attendance_files or academy_attendance_files):
     output_postcodes = convert_df(final_df['postcode'])
     output_final = convert_df(final_df)
 
-    # final_df['postcode'].to_csv("/workspaces/python-d2i-learning/school_census_app/output_postcodes.csv")
+    final_df['postcode'].to_csv("./workspaces/python-d2i-learning/school_census_app/output_postcodes.csv")
 
     
 
     postcode_list = final_df['postcode'].unique().tolist()
-
-    postcode_match = postcode_finder(postcode_list=postcode_list)
-    
-    st.write(postcode_match)
 
 
     st.download_button(
@@ -136,6 +128,11 @@ if term_file and (la_attendance_files or academy_attendance_files):
         "text/csv"
     )
 
+
+
+st.Title("Locality Split")
+
+st.button("Postcode Match & Split")
 
 
 
