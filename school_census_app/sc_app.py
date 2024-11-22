@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import urllib3
+from sc_pc import postcode_finder
 
 st.title('School Census File Joiner')
 
@@ -123,16 +124,9 @@ if term_file and (la_attendance_files or academy_attendance_files):
 
     postcode_list = final_df['postcode'].unique().tolist()
 
-    postcode_locality_dict = {}
-
-    for postcode in postcode_list:
-        url = f'https://www.doogal.co.uk/GetPostcode/{postcode}?output=json'
-        output = urllib3.request(method="GET", url=url)
-        postcode_data = output.json()
-        postcode_district = postcode_data['district']
-        postcode_locality_dict[f'{postcode}'] = postcode_district
+    postcode_match = postcode_finder(postcode_list=postcode_list)
     
-    st.write(postcode_locality_dict)
+    st.write(postcode_match)
 
 
     st.download_button(
