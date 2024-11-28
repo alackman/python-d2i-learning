@@ -7,7 +7,7 @@ def convert_df(df):
    return df.to_csv(index=False).encode('utf-8')
 
 
-st.title("School Census Postcode Filejoin")
+st.title("School Census Postcode File Grouper")
 
 postcode_files = st.file_uploader(label='Input postcode files:', accept_multiple_files=True)
 
@@ -28,6 +28,7 @@ if postcode_files:
     postcode_df = pd.concat(df_list)
     output_postcodes = convert_df(postcode_df)
 
+    st.title('Grouped postcode files:')
     st.download_button(
     "Download grouped postcode file",
     output_postcodes,
