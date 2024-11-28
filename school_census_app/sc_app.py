@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 
 
+
 st.title('School Census File Joiner')
 
 
@@ -114,8 +115,6 @@ if term_file and (la_attendance_files or academy_attendance_files):
     output_postcodes = convert_df(final_df['postcode'])
     output_final = convert_df(final_df)
 
-    final_df['postcode'].to_csv("./workspaces/python-d2i-learning/school_census_app/output_postcodes.csv")
-
     
 
     postcode_list = final_df['postcode'].unique().tolist()
@@ -124,15 +123,10 @@ if term_file and (la_attendance_files or academy_attendance_files):
     st.download_button(
         "Download final output of pupils",
         output_final,
-        "FinalOutput.csv",
+        "Final Pupil Output.csv",
         "text/csv"
     )
 
-
-
-st.Title("Locality Split")
-
-st.button("Postcode Match & Split")
 
 
 
