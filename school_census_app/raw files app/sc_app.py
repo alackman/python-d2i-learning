@@ -4,7 +4,7 @@ import pandas as pd
 
 
 st.title('School Census File Joiner')
-
+term_date = st.text_input("Enter Month and Year of Term *MmmYY* (e.g Oct23)", "")
 
 
 def convert_df(df):
@@ -45,7 +45,11 @@ if term_file and (la_attendance_files or academy_attendance_files):
     ac_check = False
 
     if len(term_file) > 1:
-        term_df = pd.concat(term_file)
+        term_file_list = []
+        for file in term_file:
+            df = pd.read_csv(file)
+            term_file_list.append(df)
+        term_df = pd.concat(term_file_list)
     elif len(term_file) == 1:
         term_df = pd.read_csv(term_file[0])
     term_df = term_df[['pupilonrolltableid','upn']]
@@ -119,13 +123,13 @@ if term_file and (la_attendance_files or academy_attendance_files):
 
     postcode_list = final_df['postcode'].unique().tolist()
 
-
-    st.download_button(
-        "Download final output of pupils",
-        output_final,
-        "Final Pupil Output.csv",
-        "text/csv"
-    )
+    if st.button("Join the files!"):
+        st.download_button(
+            "Download final output of pupils",
+            output_final,
+            f"Final Pupil Output-{term_date}.csv",
+            "text/csv"
+        )
 
 
 

@@ -38,6 +38,7 @@ if postcode_files:
 
 
 st.title("School Census Postcode Match")
+term_date = st.text_input("Enter Date of Term *MmmYY* (e.g Oct23)", "")
 
 pupil_input_file = st.file_uploader(label='Input pupil file:', accept_multiple_files=False)
 
@@ -46,37 +47,40 @@ new_postcode_file = st.file_uploader(label='Input postcode file with all relevan
 if pupil_input_file and new_postcode_file:
     pupil_input_df = pd.read_csv(pupil_input_file)
     new_postcode_df = pd.read_csv(new_postcode_file)
-    matched_df = pupil_input_df.merge(new_postcode_df, how='left', on='postcode')
-    st.title('Pupils matched to locality:')
-    matched_df
+    st.dataframe(pupil_input_df)
+    # pupil_input_df = pupil_input_df[pupil_input_df['postcode'].isin(new_postcode_df['postcode'])]
+    # matched_df = pupil_input_df.merge(new_postcode_df, how='left', on='postcode')
+    # # matched_df.insert(7, "locality", matched_df.pop('locality'))
+    # st.title('Pupils matched to locality:')
+    # matched_df
     
-    st.download_button(
-    label="Download Pupils Matched to Locality",
-    data=convert_df(matched_df),
-    file_name="All Pupils Matched to Postcode.csv",
-    mime="text/csv"
-    )
+    # st.download_button(
+    # label=f"Download Pupils Matched to Locality",
+    # data=convert_df(matched_df),
+    # file_name=f"All Pupils Matched to Postcode-{term_date}.csv",
+    # mime="text/csv"
+    # )
 
-    locality_list = matched_df['locality'].dropna().unique().tolist()
+    # locality_list = matched_df['locality'].dropna().unique().tolist()
 
-    locality_dict = {}
+    # locality_dict = {}
 
-    for locality in locality_list:
-        split_local_df = matched_df[matched_df['locality'] == locality]
-        locality_dict[locality] = split_local_df
+    # for locality in locality_list:
+    #     split_local_df = matched_df[matched_df['locality'] == locality]
+    #     locality_dict[locality] = split_local_df
 
-    # Create an in-memory ZIP file
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for key, value in locality_dict.items():
-            csv_data = convert_df(value)
-            zipf.writestr(f"{key}.csv", csv_data)
+    # # Create an in-memory ZIP file
+    # zip_buffer = io.BytesIO()
+    # with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    #     for key, value in locality_dict.items():
+    #         csv_data = convert_df(value)
+    #         zipf.writestr(f"{key}.csv", csv_data)
     
-    # Provide download link for the ZIP file
-    st.title('School Census files split by Locality')
-    st.download_button(
-        label="Download School Census Locality Files ZIP",
-        data=zip_buffer.getvalue(),
-        file_name="school census files.zip",
-        mime="application/zip"
-    )
+    # # Provide download link for the ZIP file
+    # st.title('School Census files split by Locality')
+    # st.download_button(
+    #     label="Download School Census Locality Files ZIP",
+    #     data=zip_buffer.getvalue(),
+    #     file_name=f"school census files-{term_date}.zip",
+    #     mime="application/zip"
+    # )
